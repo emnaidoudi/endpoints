@@ -21,7 +21,8 @@ bot = ChatBot(
 def fill_intents_file(intents):
     pass
 #--------------------------------------------------------------------------------------------------------
-def sey():
+@app.route("/api/chatbot/intents",methods=['GET'])
+def get_intents_file(intents):
     pass
 #-----------------------------------------------MATH------------------------------------------------------
 @app.route("/api/chatbot/math/<string:sentence>", methods=['GET'])
