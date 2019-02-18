@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/advyteam/Flask/Math/model.tflearn"
+all_model_checkpoint_paths: "/home/advyteam/Flask/Math/model.tflearn"

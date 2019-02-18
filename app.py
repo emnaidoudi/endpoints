@@ -14,6 +14,14 @@ bot = ChatBot(
         #'chatterbot.logic.TimeLogicAdapter'
    ])  
 
+
+
+#--------------------------------------INTENTS---------------------------------------------------------
+@app.route("/api/chatbot/intents",methods=['POST'])
+def fill_intents_file(intents):
+    pass
+#--------------------------------------------------------------------------------------------------------
+
 #-----------------------------------------------MATH------------------------------------------------------
 @app.route("/api/chatbot/math/<string:sentence>", methods=['GET'])
 def mathApi(sentence):

@@ -1,7 +1,9 @@
 import nltk
 from nltk.stem.lancaster import LancasterStemmer
+from nltk.stem.snowball import FrenchStemmer
 
 stemmer = LancasterStemmer()
+fstemmer = FrenchStemmer()
 
 import numpy as np
 import tflearn
@@ -12,6 +14,12 @@ import random
 import json
 with open('intents.json') as json_data:
     intents = json.load(json_data)
+
+
+def engilsh_french_stem(sentence):
+    french=fstemmer.stem(sentence)
+    english=stemmer.stem(sentence)
+    return french if len(french)< len(english) else english
 
 
 words = [] #Design the Vocabulary (unique words)
@@ -33,7 +41,7 @@ for intent in intents['intents']:
 
 
 # stem and lower each word and remove duplicates
-words = [stemmer.stem(w.lower()) for w in words if w not in ignore_words]
+words = [engilsh_french_stem(w.lower()) for w in words if w not in ignore_words]
 words = sorted(list(set(words)))
 
 # remove duplicates
@@ -59,7 +67,7 @@ for doc in documents:
     # list of tokenized words for the pattern (pattern = what user says)
     pattern_words = doc[0] 
     # stem each word
-    pattern_words = [stemmer.stem(word.lower()) for word in pattern_words]
+    pattern_words = [engilsh_french_stem(word.lower()) for word in pattern_words]
     # create our bag of words array
     # mark the presence of words as a boolean value, 0 for absent, 1 for present.
     for w in words:
@@ -94,6 +102,8 @@ net = tflearn.regression(net)
 model = tflearn.DNN(net, tensorboard_dir='tflearn_logs')
 # Start training (apply gradient descent algorithm)
 model.fit(train_x, train_y, n_epoch=1000, batch_size=8, show_metric=True)
+
+#--------------------------------------SAVE---------------------------------------------
 model.save('model.tflearn')
 
 

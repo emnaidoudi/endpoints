@@ -2,7 +2,16 @@
 import nltk
 from spellchecker import SpellChecker
 from nltk.stem.lancaster import LancasterStemmer
+from nltk.stem.snowball import FrenchStemmer
+
 stemmer = LancasterStemmer()
+fstemmer = FrenchStemmer()
+
+
+def engilsh_french_stem(sentence):
+    french=fstemmer.stem(sentence)
+    english=stemmer.stem(sentence)
+    return french if len(french)< len(english) else english
 
 # things we need for Tensorflow
 import numpy as np
@@ -23,9 +32,10 @@ import json
 with open('intents.json') as json_data:
     intents = json.load(json_data)
 
+spell = SpellChecker()
+
 
 def clean_up_sentence(sentence):
-    spell = SpellChecker()
     # tokenize the pattern
     sentence_words = nltk.word_tokenize(sentence)
         
@@ -37,7 +47,7 @@ def clean_up_sentence(sentence):
         
     
     # stem each word
-    sentence_words = [stemmer.stem(word.lower()) for word in sentence_words]
+    sentence_words = [engilsh_french_stem(word.lower()) for word in sentence_words]
 
     #print("after cleaning up ",sentence_words)
     return sentence_words
@@ -94,8 +104,48 @@ def classify(sentence): # Sentence = a pattern = what user can say.
 
 #-----------------------------------------------------------------------------------------------------------------
 
+
+from watson_developer_cloud import LanguageTranslatorV3
+import json
+
+language_translator = LanguageTranslatorV3(
+    version='2018-05-01',
+    iam_apikey='6N2fgkLzRaDtj7vM90uDNYiBZY8rxYRdfzXKvQ0vqio9',
+    url='https://gateway-lon.watsonplatform.net/language-translator/api'
+)
+
+#-----------------------------------------------CORECTION-----------------------------------------------------
+def correct(sentence):
+    # tokenize the pattern
+    sentence_words = nltk.word_tokenize(sentence)
+        
+    #Spelling correction
+    misspelled=spell.unknown(sentence_words)
+    for i in sentence_words:
+        if i  in misspelled:
+            sentence_words[sentence_words.index(i)]=spell.correction(i)
+    return ' '.join(sentence_words) 
+
+#------------------------------------------------------------------------------------------------------------
+
+def ibm_watson_translation(sentence):
+    sentence=correct(sentence)
+    translation = language_translator.translate(
+    text=sentence,
+    model_id='en-fr').get_result()
+    return translation["translations"][0]["translation"]
+
+
 # We will classify the pattern (sentence) and from the given intent we choose randomly a response
 def response(sentence, userID='123', show_details=False):
+    for i in intents['intents']:
+        if 'context_filter' in i and len(context)>0 and i["context_filter"]==context[userID]:
+            context.clear()
+            # Check if it is a TRANSALATION
+            if i["context_filter"]=="ibm_translation":
+                return str(ibm_watson_translation(sentence))
+            return str(random.choice(i['responses']))
+
     results = classify(sentence)
     # if we have a classification then find the matching intent tag
     if results:

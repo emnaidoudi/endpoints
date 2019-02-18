@@ -1,8 +1,7 @@
 {"intents": [
         {"tag": "greeting",
          "patterns": ["Hi", "How are you", "Is anyone there?", "Hello", "Good day"],
-         "responses": ["Hello, thanks for visiting", "Good to see you again", "Hi there, how can I help?"],
-         "context_set": ""
+         "responses": ["Hello, thanks for visiting", "Good to see you again", "Hi there, how can I help?"]
         },
         {"tag": "goodbye",
          "patterns": ["Bye", "See you later", "Goodbye"],
@@ -37,6 +36,17 @@
          "patterns": ["today"],
          "responses": ["For rentals today please call 1-800-MYMOPED", "Same-day rentals please call 1-800-MYMOPED"],
          "context_filter": "rentalday"
+        },
+        {"tag": "translation",
+         "patterns": ["translate", "i want you to translate me some thing", "wanna a translation","can u translate","je veux une translate"],
+         "responses": ["give me the sentence to translate", "what do you want to translate?"],
+	 "context_set": "ibm_translation"
+        },
+
+        {"tag": "ibm-watson",
+                "patterns":[],
+                "responses":["here will be your translation"],
+                 "context_filter": "ibm_translation"
         }
    ]
 }
