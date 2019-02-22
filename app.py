@@ -28,20 +28,25 @@ bot = ChatBot(
 
 #--------------------------------------INTENTS CRUD ---------------------------------------------------------
 
-@app.route('/intents', methods=['GET', 'POST', 'DELETE', 'PUT'])
-def intent():
+@app.route('/api/chatbot/intents', methods=['GET', 'POST', 'PUT'])
+@app.route('/api/chatbot/intents/<string:tag>', methods=['DELETE', 'PUT'])
+def intent(tag=""):
+    if request.method=="DELETE":
+        collection.delete_one({ "tag" : tag })
+        return Response(status=200) 
     if request.method=='GET':
         intents=db.intents.find( { },{"tag":1,"patterns":1,"responses":1,"_id":0})
         return Response(dumps(intents),status=200)
     data = request.get_json()
     if request.method == 'POST':
-        collection.insert_one(data)
-        return Response(status=201)
-    if request.method=="DELETE":
-        collection.delete_one({ "tag" : data['tag'] })
-        return Response(status=200) 
+        try:
+            collection.insert_one(data)
+            return Response(status=201)
+        except:
+            return Response("Tag must be unique",status=405)    
+
     if request.method=="PUT":
-        pass    
+        pass  
 
         
 
