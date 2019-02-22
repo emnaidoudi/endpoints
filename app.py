@@ -1,5 +1,5 @@
 #!flask/bin/python
-from flask import Flask, jsonify, Response
+from flask import Flask, jsonify, Response,request
 from mathi import *
 from framework import response
 from chatterbot import ChatBot
@@ -27,6 +27,27 @@ bot = ChatBot(
 
 
 #--------------------------------------INTENTS CRUD ---------------------------------------------------------
+
+@app.route('/intents', methods=['GET', 'POST', 'DELETE', 'PUT'])
+def intent():
+    if request.method=='GET':
+        intents=db.intents.find( { },{"tag":1,"patterns":1,"responses":1,"_id":0})
+        return Response(dumps(intents),status=200)
+    data = request.get_json()
+    if request.method == 'POST':
+        collection.insert_one(data)
+        return Response(status=201)
+    if request.method=="DELETE":
+        collection.delete_one({ "tag" : data['tag'] })
+        return Response(status=200) 
+    if request.method=="PUT":
+        pass    
+
+        
+
+
+
+
 
 @app.route("/api/chatbot/crud/intents",methods=['POST'])
 def post_intents(intents):
