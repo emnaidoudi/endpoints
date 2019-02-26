@@ -172,6 +172,6 @@ def response(sentence, userID='123', show_details=False):
             results.pop(0)
 
 
-a=response("hello u")
+a=response("thanks")
 print(a)            
 
