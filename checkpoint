@@ -1,2 +1,2 @@
-model_checkpoint_path: "/home/advyteam/Flask/Math/model.tflearn"
-all_model_checkpoint_paths: "/home/advyteam/Flask/Math/model.tflearn"
+model_checkpoint_path: "/home/helmi/Github/2/endpoints/model.tflearn"
+all_model_checkpoint_paths: "/home/helmi/Github/2/endpoints/model.tflearn"

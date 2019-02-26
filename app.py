@@ -1,17 +1,18 @@
 #!flask/bin/python
 from flask import Flask, jsonify, Response,request
 from mathi import *
-from framework import response
+from framework import get_response
 from chatterbot import ChatBot
 from flask_cors import CORS
-from flask_pymongo import PyMongo,MongoClient
+#from flask_pymongo import PyMongo,MongoClient
 import os
 from bson.json_util import dumps
 import json
 from model import *
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+"""cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 client = MongoClient(
     "mongodb://localhost:27017/")
 db = client.mydb
@@ -87,7 +88,7 @@ def update_intent():
 
 
 
-
+"""
 
 
 
@@ -113,7 +114,7 @@ def basic(sentence):
         bot_answer=str(bot.get_response(sentence))
         return jsonify({"response":bot_answer})
     except: 
-        return  jsonify({"response":response(sentence)})  
+        return  jsonify({"response":get_response(sentence)})  
 
     
 
